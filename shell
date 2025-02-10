@@ -1,23 +1,31 @@
 #! /bin/bash
 
+# Verifica se o número de argumentos é suficiente
+# O primeiro argumento deve ser o nome do arquivo de saída
+# Os demais argumentos são os arquivos a serem compactados
 if [ "$#" -lt 2 ]; then
-        echo "O programa $0 requer nome do arquivo e arquivos a serem compactados"
-        exit 1
+    echo "O programa $0 requer nome do arquivo de saída e arquivos a serem compactados"
+    exit 1
 fi
+
+# Define o nome do arquivo compactado e os arquivos a serem incluídos
 arquivo_saida="$1"
 arquivos=("${@:2}")
 
 todos_existem=true
+
+# Verifica se todos os arquivos especificados existem
 for arquivo in "${arquivos[@]}"; do
-        if [ ! -e "$arquivo" ]; then
-                todos_existem=false
-                break
-        fi
+    if [ ! -e "$arquivo" ]; then
+        todos_existem=false
+        break
+    fi
 done
 
+# Se todos os arquivos existirem, cria um arquivo compactado com tar e gzip
 if $todos_existem; then
-        tar -czf "$arquivo_saida" "${arquivos[@]}"
-        echo "Compactado com sucesso em $arquivo_saida"
+    tar -czf "$arquivo_saida" "${arquivos[@]}"
+    echo "Compactado com sucesso em $arquivo_saida"
 else
-        echo "Caminho do arquivo não existente"
+    echo "Erro: Um ou mais arquivos não existem. Verifique os caminhos e tente novamente."
 fi
